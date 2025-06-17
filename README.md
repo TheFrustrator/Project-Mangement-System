@@ -1,6 +1,6 @@
 # MERN Stack Project & Task Management Application
 
-Welcome to the **MERN Stack Project and Task Management App**—a robust, cloud-based solution designed for efficient project organization, task assignment, and seamless team collaboration. This application leverages the power of the MERN stack (MongoDB, Express.js, React.js, Node.js) combined with modern UI development tools such as **TypeScript**, **React Router v7**, **Shadcn UI**, and **Tailwind CSS v4** for rapid, scalable, and visually appealing development.
+Welcome to the **MERN Stack Project and Task Management App**—a robust, cloud-based solution designed for efficient project organization, task assignment, and seamless team collaboration. This application leverages the power of the MERN stack (MongoDB, Express.js, React.js, Node.js) combined with modern UI development tools such as **npm**, and **Tailwind CSS v4** for rapid, scalable, and visually appealing development.
 
 ## 🚀 Project Overview
 
@@ -18,7 +18,7 @@ This application empowers individuals and teams to:
 - **User Authentication**: Secure registration, login, and role-based access powered by JWT.
 - **Project & Task Management**: Create, update, delete, and assign projects and tasks with deadlines, priorities, and status tracking.
 - **Real-Time Collaboration**: Team chat, comments, and instant notifications.
-- **Modern UI/UX**: Built with Shadcn UI and Tailwind CSS v4 for a sleek, responsive experience.
+- **Modern UI/UX**: Built with Tailwind CSS v4 for a sleek, responsive experience.
 - **Dashboard & Analytics**: Visual representation of workload, team activities, and project milestones.
 - **Cloud Deployment**: Easily deployable on platforms like Vercel, Render, or AWS.
 - **TypeScript Support**: Full type safety across frontend and backend.
@@ -26,9 +26,9 @@ This application empowers individuals and teams to:
 
 ## 🛠️ Tech Stack
 
-- **Frontend**: React.js, TypeScript, Shadcn UI, Tailwind CSS v4, React Router v7, Axios
+- **Frontend**: React.js, Tailwind CSS v4, Axios
 - **Backend**: Node.js, Express.js, MongoDB, Mongoose, JWT
-- **Dev Tools**: ESLint, Prettier, Husky, Vite, GitHub Actions
+- **Dev Tools**:  Vite, GitHub Actions
 - **Deployment**: Vercel, Render, or AWS
 - **Other**: dotenv, bcrypt, CORS, Helmet, Morgan
 
@@ -54,11 +54,8 @@ This application empowers individuals and teams to:
 
 - [React.js Documentation](https://react.dev/)
 - [Tailwind CSS v4](https://tailwindcss.com/)
-- [Shadcn UI](https://ui.shadcn.com/)
 - [Express.js](https://expressjs.com/)
 - [MongoDB](https://www.mongodb.com/)
-- [TypeScript](https://www.typescriptlang.org/)
-
 
 ## 📝 License
 
