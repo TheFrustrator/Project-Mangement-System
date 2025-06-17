@@ -59,9 +59,6 @@ This application empowers individuals and teams to:
 - [MongoDB](https://www.mongodb.com/)
 - [TypeScript](https://www.typescriptlang.org/)
 
-## 🤝 Contributing
-
-Contributions are welcome! Please read the [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines.
 
 ## 📝 License
 
