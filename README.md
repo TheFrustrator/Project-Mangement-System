@@ -50,10 +50,6 @@ This application empowers individuals and teams to:
 5. **Open in Browser**
    - Visit `http://localhost:5173` (or as specified in your setup).
 
-## 💡 Screenshots
-
-Include screenshots or GIFs here to showcase the UI and features.
-
 ## 📚 Learn More
 
 - [React.js Documentation](https://react.dev/)
