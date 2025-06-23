@@ -37,7 +37,7 @@ const DashboardLayout = () => {
   };
 
   return (
-    <div className="flex h-screen w-full">
+    <div className="flex h-screen w-full ">
       <SidebarComponent currentWorkspace={currentWorkspace} />
 
       <div className="flex flex-1 flex-col h-full">

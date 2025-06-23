@@ -17,7 +17,7 @@ import { WorkspaceAvatar } from "../workspace/workspace-avatar";
 
 interface HeaderProps {
   onWorkspaceSelected: (workspace: Workspace) => void;
-  selectedWorkspace: Workspace | null ;
+  selectedWorkspace: Workspace | null;
   onCreateWorkspace: () => void;
 }
 
@@ -48,9 +48,9 @@ export const Header = ({
   return (
     <div className="bg-background sticky top-0 z-40 border-b">
       <div className="flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
-        <DropdownMenu>
+        <DropdownMenu >
           <DropdownMenuTrigger asChild>
-            <Button variant={"outline"}>
+            <Button variant={"outline"} >
               {selectedWorkspace ? (
                 <>
                   {selectedWorkspace.color && (
@@ -59,15 +59,19 @@ export const Header = ({
                       name={selectedWorkspace.name}
                     />
                   )}
-                  <span className="font-medium">{selectedWorkspace?.name}</span>
+                  <span className="font-medium ">
+                    {selectedWorkspace?.name}
+                  </span>
                 </>
               ) : (
-                <span className="font-medium">Select Workspace</span>
+                <span>
+                  Select Workspace
+                </span>
               )}
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent>
+          <DropdownMenuContent >
             <DropdownMenuLabel>Workspace</DropdownMenuLabel>
             <DropdownMenuSeparator />
 
@@ -85,9 +89,9 @@ export const Header = ({
               ))}
             </DropdownMenuGroup>
 
-            <DropdownMenuGroup>
+            <DropdownMenuGroup >
               <DropdownMenuItem onClick={onCreateWorkspace}>
-                <PlusCircle className="w-4 h-4 mr-2" />
+                <PlusCircle className="w-4 h-4 mr-2 " />
                 Create Workspace
               </DropdownMenuItem>
             </DropdownMenuGroup>
@@ -101,7 +105,7 @@ export const Header = ({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="rounded-full border p-1 w-8 h-8">
+              <button className="rounded-full border p-1 w-8 h-8 ">
                 <Avatar className="w-8 h-8">
                   <AvatarImage src={user?.profilePicture} alt={user?.name} />
                   <AvatarFallback className="bg-primary text-primary-foreground">
@@ -113,11 +117,11 @@ export const Header = ({
 
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator className="bg-gray-500 text-white"/>
               <DropdownMenuItem>
                 <Link to="/user/profile">Profile</Link>
               </DropdownMenuItem>
-              <DropdownMenuSeparator />
+              <DropdownMenuSeparator/>
               <DropdownMenuItem onClick={logout}>Log Out</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

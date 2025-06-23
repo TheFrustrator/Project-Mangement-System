@@ -62,7 +62,7 @@ export const SidebarComponent = ({
   return (
     <div
       className={cn(
-        "flex flex-col border-r bg-sidebar transition-all duration-300",
+        "flex flex-col border-r transition-all duration-300",
         isCollapsed ? "w-16 md:w[80px]" : "w-16 md:w-[240px]"
       )}
     >

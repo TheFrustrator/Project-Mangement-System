@@ -25,7 +25,7 @@ export const SidebarNav = ({
   const navigate = useNavigate();
 
   return (
-    <nav className={cn("flex flex-col gap-y-2", className)} {...props}>
+    <nav className={cn("flex flex-col gap-y-2 ", className)} {...props}>
       {items.map((el) => {
         const Icon = el.icon;
         const isActive = location.pathname === el.href;
