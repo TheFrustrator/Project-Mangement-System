@@ -10,11 +10,28 @@ import {
   DialogHeader,
   DialogTitle,
 } from "../ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "../ui/form";
 import { Input } from "../ui/input";
 import { Textarea } from "../ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
-
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select";
+import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover";
+import { Button } from "../ui/button";
+import { Calendar } from "../ui/calendar";
+import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 
 interface CraeteProjectDialogProps {
   isOpen: boolean;
@@ -86,31 +103,77 @@ export const CraeteProjectDialog = ({
                   </FormItem>
                 )}
               />
-               <FormField
-              control={form.control}
-              name="status"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Project Status</FormLabel>
-                  <FormControl>
-                    <Select value={field.value} onValueChange={field.onChange}>
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Select Project Status" />
-                      </SelectTrigger>
+              <FormField
+                control={form.control}
+                name="status"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Project Status</FormLabel>
+                    <FormControl>
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
+                      >
+                        <SelectTrigger className="w-full">
+                          <SelectValue placeholder="Select Project Status" />
+                        </SelectTrigger>
 
-                      <SelectContent>
-                        {Object.values(ProjectStatus).map((status) => (
-                          <SelectItem key={status} value={status}>
-                            {status}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
+                        <SelectContent>
+                          {Object.values(ProjectStatus).map((status) => (
+                            <SelectItem key={status} value={status}>
+                              {status}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="startDate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Start Date</FormLabel>
+                      <FormControl>
+                        <Popover modal={true}>
+                          <PopoverTrigger asChild>
+                            <Button
+                              variant={"outline"}
+                              className={
+                                "w-full justify-start text-left font-normal" +
+                                (!field.value ? "text-muted-foreground" : "")
+                              }
+                            >
+                              <CalendarIcon className="size-4 mr-2" />
+                              {field.value ? (
+                                format(new Date(field.value), "PPPP")
+                              ) : (
+                                <span>Pick a date</span>
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent>
+                            <Calendar
+                              mode="single"
+                              selected={
+                                field.value ? new Date(field.value) : undefined
+                              }
+                              onSelect={(date) => {
+                                field.onChange(date?.toISOString() || undefined);
+                              }}
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
             </form>
           </Form>
         </DialogContent>
