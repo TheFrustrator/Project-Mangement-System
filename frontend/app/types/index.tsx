@@ -1,3 +1,5 @@
+
+
 export interface User {
   _id: string;
   email: string;
@@ -184,4 +186,11 @@ export interface WorkspaceProductivityData {
   name: string;
   completed: number;
   total: number;
+}
+
+export interface MemberProps {
+  _id: string;
+  user: User;
+  role: "admin" | "member" | "owner" | "viewer";
+  joinedAt: Date;
 }
