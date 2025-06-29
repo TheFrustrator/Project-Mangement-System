@@ -51,5 +51,4 @@ const createProject = async (req, res) => {
   }
 };
 
-
 export { createProject };

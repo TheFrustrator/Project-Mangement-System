@@ -1,4 +1,4 @@
-import { Schema } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const commentSchema = new Schema(
     {
@@ -62,6 +62,6 @@ const commentSchema = new Schema(
     },{timestamps: true}
 );
 
-const Comment = modal("Comment", commentSchema);
+const Comment = mongoose.modal("Comment", commentSchema);
 
 export default Comment;
