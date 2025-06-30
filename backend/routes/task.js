@@ -1,36 +1,40 @@
 import express from 'express';
 import { validateRequest } from 'zod-express-middleware';
-import { z } from 'zod';
+import { taskSchema } from '../libs/validate-schema.js';
+import { createTask, getMyTasks, getTaskById,  } from '../controllers/task.js';
 import AuthMiddleWare from './../middleware/authMiddleware.js';
-// Assuming you have a project controller file, e.g., ../controllers/project.js
-import { getProjectTasks } from '../controllers/project.js'; // Import the new controller function
-// You might have other project-related controllers here too, e.g., createProject, getProjectById
+import { z } from 'zod';
 
 const router = express.Router();
 
-// NEW: Route to get all tasks for a specific project
-router.get(
-  "/:projectId/tasks",
-  AuthMiddleWare, // Apply authentication middleware
+router.post(
+  "/:projectId/create-task",
+  AuthMiddleWare,
   validateRequest({
     params: z.object({
       projectId: z.string(),
     }),
+    body: taskSchema,
   }),
-  getProjectTasks // Use the new controller function
+  createTask
 );
 
-// Your existing project routes would go here.
-// For example, if you have a route to get a single project:
-// router.get(
-//   "/:projectId",
-//   AuthMiddleWare,
-//   validateRequest({
-//     params: z.object({
-//       projectId: z.string(),
-//     }),
-//   }),
-//   getProjectById // Assuming you have this controller function
-// );
+router.get("/my-tasks", AuthMiddleWare, getMyTasks);
+
+router.get(
+  "/:taskId",
+  AuthMiddleWare,
+  validateRequest({
+    params: z.object({
+      taskId: z.string(),
+    }),
+  }),
+  getTaskById
+);
+
+
+
+
+
 
 export default router;

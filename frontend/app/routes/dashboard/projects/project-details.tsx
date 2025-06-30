@@ -173,7 +173,7 @@ const ProjectDetails = () => {
         </Tabs>
       </div>
 
-      {/* create task dialog */}
+      {/* create    task dialog */}
       <CreateTaskDialog
         open={isCreateTask}
         onOpenChange={setIsCreateTask}

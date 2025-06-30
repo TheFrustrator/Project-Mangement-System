@@ -1,8 +1,9 @@
+// controllers/task.js
+
 import Project from "../models/project.js";
-import Task from "../models/task.js"; // Ensure Task model is imported
+import Task from "../models/task.js";
 import Workspace from "../models/workspace.js";
 
-// Existing createTask and getTaskById from your original input
 const createTask = async (req, res) => {
   try {
     const { projectId } = req.params;
@@ -10,29 +11,20 @@ const createTask = async (req, res) => {
       req.body;
 
     const project = await Project.findById(projectId);
-
-    if (!project) {
-      return res.status(404).json({
-        message: "Project not found",
-      });
-    }
+    if (!project) return res.status(404).json({ message: "Project not found" });
 
     const workspace = await Workspace.findById(project.workspace);
-
-    if (!workspace) {
-      return res.status(404).json({
-        message: "Workspace not found",
-      });
-    }
+    if (!workspace)
+      return res.status(404).json({ message: "Workspace not found" });
 
     const isMember = workspace.members.some(
       (member) => member.user.toString() === req.user._id.toString()
     );
 
     if (!isMember) {
-      return res.status(403).json({
-        message: "You are not a member of this workspace",
-      });
+      return res
+        .status(403)
+        .json({ message: "You are not a member of this workspace" });
     }
 
     const newTask = await Task.create({
@@ -41,7 +33,7 @@ const createTask = async (req, res) => {
       status,
       priority,
       dueDate,
-      assignees, // This will now correctly map to the 'assignees' field in the Task model
+      assignees,
       project: projectId,
       createdBy: req.user._id,
     });
@@ -49,12 +41,14 @@ const createTask = async (req, res) => {
     project.tasks.push(newTask._id);
     await project.save();
 
-    res.status(201).json(newTask);
+    const populatedTask = await Task.findById(newTask._id)
+      .populate("assignees", "name profilePicture")
+      .populate("watchers", "name profilePicture");
+
+    res.status(201).json(populatedTask);
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
+    console.error("Create Task Error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
@@ -66,11 +60,7 @@ const getTaskById = async (req, res) => {
       .populate("assignees", "name profilePicture")
       .populate("watchers", "name profilePicture");
 
-    if (!task) {
-      return res.status(404).json({
-        message: "Task not found",
-      });
-    }
+    if (!task) return res.status(404).json({ message: "Task not found" });
 
     const project = await Project.findById(task.project).populate(
       "members.user",
@@ -79,40 +69,18 @@ const getTaskById = async (req, res) => {
 
     res.status(200).json({ task, project });
   } catch (error) {
-    console.log(error);
-    return res.status(500).json({
-      message: "Internal server error",
-    });
+    console.error("Get Task Error:", error);
+    res.status(500).json({ message: "Internal server error" });
   }
 };
 
-// NEW: Controller function to get all tasks for a specific project
-const getProjectTasks = async (req, res) => {
+const getMyTasks = async (req, res) => {
   try {
-    const { projectId } = req.params;
+    const tasks = await Task.find({ assignees: { $in: [req.user._id] } })
+      .populate("project", "title workspace")
+      .sort({ createdAt: -1 });
 
-    const project = await Project.findById(projectId)
-      .populate({
-        path: "tasks", // Populate the 'tasks' array in the Project model
-        model: "Task", // Specify the model to populate from
-        populate: {
-          path: "assignees", // Populate 'assignees' within each task
-          model: "User", // Specify the User model for assignees
-          select: "name profilePicture", // Select specific fields for assignees
-        },
-      })
-      .populate("members.user", "name profilePicture"); // Also populate project members if needed by frontend
-
-    if (!project) {
-      return res.status(404).json({
-        message: "Project not found",
-      });
-    }
-
-    // You might want to add authorization checks here, similar to createTask
-    // e.g., check if req.user._id is a member of the workspace/project
-
-    res.status(200).json({ project, tasks: project.tasks });
+    res.status(200).json(tasks);
   } catch (error) {
     console.log(error);
     return res.status(500).json({
@@ -121,4 +89,6 @@ const getProjectTasks = async (req, res) => {
   }
 };
 
-export { createTask, getTaskById, getProjectTasks };
+
+
+export { createTask, getTaskById, getMyTasks};

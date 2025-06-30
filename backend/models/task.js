@@ -19,13 +19,12 @@ const taskSchema = new Schema(
       enum: ["Low", "Medium", "High"],
       default: "Medium",
     },
-    assignees: [{ type: Schema.Types.ObjectId, ref: "User" }], // Fixed typo: changed 'assigness' to 'assignees'
+    assignees: [{ type: Schema.Types.ObjectId, ref: "User" }],
     watchers: [{ type: Schema.Types.ObjectId, ref: "User" }],
-    startDate: { type: Date },
     dueDate: { type: Date },
     completedAt: { type: Date },
-    estimateHours: { type: Number, min: 0 },
-    actualHours: { type: String },
+    estimatedHours: { type: Number, min: 0 },
+    actualHours: { type: Number, min: 0 },
     tags: [{ type: String }],
     subtasks: [
       {
@@ -43,7 +42,7 @@ const taskSchema = new Schema(
         },
       },
     ],
-    Comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
+    comments: [{ type: Schema.Types.ObjectId, ref: "Comment" }],
     attachments: [
       {
         fileName: { type: String, required: true },
@@ -51,6 +50,7 @@ const taskSchema = new Schema(
         fileType: { type: String },
         fileSize: { type: Number },
         uploadedBy: { type: Schema.Types.ObjectId, ref: "User" },
+        uploadedAt: { type: Date, default: Date.now },
       },
     ],
     createdBy: { type: Schema.Types.ObjectId, ref: "User", required: true },
