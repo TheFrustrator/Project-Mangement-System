@@ -19,7 +19,7 @@ const taskSchema = new Schema(
       enum: ["Low", "Medium", "High"],
       default: "Medium",
     },
-    assigness: [{ type: Schema.Types.ObjectId, ref: "User" }],
+    assignees: [{ type: Schema.Types.ObjectId, ref: "User" }], // Fixed typo: changed 'assigness' to 'assignees'
     watchers: [{ type: Schema.Types.ObjectId, ref: "User" }],
     startDate: { type: Date },
     dueDate: { type: Date },
@@ -60,3 +60,5 @@ const taskSchema = new Schema(
 );
 
 const Task = mongoose.model("Task", taskSchema);
+
+export default Task;
