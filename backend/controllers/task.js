@@ -1,5 +1,6 @@
 // controllers/task.js
 
+import { recordActivity } from "../libs/index.js";
 import Project from "../models/project.js";
 import Task from "../models/task.js";
 import Workspace from "../models/workspace.js";
@@ -89,6 +90,216 @@ const getMyTasks = async (req, res) => {
   }
 };
 
+const updateTaskTitle = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { title } = req.body;
 
+    const task = await Task.findById(taskId);
 
-export { createTask, getTaskById, getMyTasks};
+    if (!task) {
+      return res.status(404).json({
+        message: "Task not found",
+      });
+    }
+
+    const project = await Project.findById(task.project);
+
+    if (!project) {
+      return res.status(404).json({
+        message: "Project not found",
+      });
+    }
+
+    const isMember = project.members.some(
+      (member) => member.user.toString() === req.user._id.toString()
+    );
+
+    if (!isMember) {
+      return res.status(403).json({
+        message: "You are not a member of this project",
+      });
+    }
+
+    const oldTitle = task.title;
+
+    task.title = title;
+    await task.save();
+
+    // record activity
+    await recordActivity(req.user._id, "updated_task", "Task", taskId, {
+      description: `updated task title from ${oldTitle} to ${title}`,
+    });
+
+    res.status(200).json(task);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+const updateTaskStatus = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { status } = req.body;
+
+    const task = await Task.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({
+        message: "Task not found",
+      });
+    }
+
+    const project = await Project.findById(task.project);
+
+    if (!project) {
+      return res.status(404).json({
+        message: "Project not found",
+      });
+    }
+
+    const isMember = project.members.some(
+      (member) => member.user.toString() === req.user._id.toString()
+    );
+
+    if (!isMember) {
+      return res.status(403).json({
+        message: "You are not a member of this project",
+      });
+    }
+
+    const oldStatus = task.status;
+
+    task.status = status;
+    await task.save();
+
+    // record activity
+    await recordActivity(req.user._id, "updated_task", "Task", taskId, {
+      description: `updated task status from ${oldStatus} to ${status}`,
+    });
+
+    res.status(200).json(task);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+const updateTaskDescription = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { description } = req.body;
+
+    const task = await Task.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({
+        message: "Task not found",
+      });
+    }
+
+    const project = await Project.findById(task.project);
+
+    if (!project) {
+      return res.status(404).json({
+        message: "Project not found",
+      });
+    }
+
+    const isMember = project.members.some(
+      (member) => member.user.toString() === req.user._id.toString()
+    );
+
+    if (!isMember) {
+      return res.status(403).json({
+        message: "You are not a member of this project",
+      });
+    }
+
+    const oldDescription =
+      task.description.substring(0, 50) +
+      (task.description.length > 50 ? "..." : "");
+    const newDescription =
+      description.substring(0, 50) + (description.length > 50 ? "..." : "");
+
+    task.description = description;
+    await task.save();
+
+    // record activity
+    await recordActivity(req.user._id, "updated_task", "Task", taskId, {
+      description: `updated task description from ${oldDescription} to ${newDescription}`,
+    });
+
+    res.status(200).json(task);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+const updateTaskAssignees = async (req, res) => {
+  try {
+    const { taskId } = req.params;
+    const { assignees } = req.body;
+
+    const task = await Task.findById(taskId);
+
+    if (!task) {
+      return res.status(404).json({
+        message: "Task not found",
+      });
+    }
+
+    const project = await Project.findById(task.project);
+
+    if (!project) {
+      return res.status(404).json({
+        message: "Project not found",
+      });
+    }
+
+    const isMember = project.members.some(
+      (member) => member.user.toString() === req.user._id.toString()
+    );
+
+    if (!isMember) {
+      return res.status(403).json({
+        message: "You are not a member of this project",
+      });
+    }
+
+    const oldAssignees = task.assignees;
+
+    task.assignees = assignees;
+    await task.save();
+
+    // record activity
+    await recordActivity(req.user._id, "updated_task", "Task", taskId, {
+      description: `updated task assignees from ${oldAssignees.length} to ${assignees.length}`,
+    });
+
+    res.status(200).json(task);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
+export {
+  createTask,
+  getTaskById,
+  getMyTasks,
+  updateTaskDescription,
+  updateTaskTitle,
+  updateTaskStatus,
+  updateTaskAssignees,
+};
