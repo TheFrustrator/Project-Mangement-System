@@ -1,6 +1,7 @@
 // controllers/task.js
 
 import { recordActivity } from "../libs/index.js";
+import ActivityLog from "../models/activity.js";
 import Project from "../models/project.js";
 import Task from "../models/task.js";
 import Workspace from "../models/workspace.js";
@@ -344,21 +345,21 @@ const updateTaskPriority = async (req, res) => {
   }
 };
 
-const addSubTask = async(req, res) => {
+const addSubTask = async (req, res) => {
   try {
     const { taskId } = req.params;
     const { title } = req.body;
 
     const task = await Task.findById(taskId);
 
-    if(!task) {
+    if (!task) {
       return res.status(404).json({
         message: "Task not found",
-      })
+      });
     }
 
     const project = await Project.findById(task.project);
-    if(!project){
+    if (!project) {
       return res.status(404).json({
         message: "Project not found",
       });
@@ -368,7 +369,7 @@ const addSubTask = async(req, res) => {
       (member) => member.user.toString() === req.user._id.toString()
     );
 
-    if(!isMember){
+    if (!isMember) {
       return res.status(403).json({
         message: "You are not a member of this project",
       });
@@ -384,8 +385,8 @@ const addSubTask = async(req, res) => {
 
     //record activity
     await recordActivity(req.user._id, "created_subtask", "Task", taskId, {
-      description: `created subtask ${title}`
-    })
+      description: `created subtask ${title}`,
+    });
 
     res.status(201).json(task);
   } catch (error) {
@@ -396,21 +397,22 @@ const addSubTask = async(req, res) => {
   }
 };
 
-const updateSubTask =  async (req,res) => {
+const updateSubTask = async (req, res) => {
   try {
     const { taskId, subTaskId } = req.params;
     const { completed } = req.body;
 
-
     const task = await Task.findById(taskId);
-    if(!task){
+    if (!task) {
       return res.status(404).json({
         message: "Task not found",
       });
     }
 
-    const subTask = task.subtasks.find((subTask) => subTask._id.toString() === subTaskId);
-    if(!subTask){
+    const subTask = task.subtasks.find(
+      (subTask) => subTask._id.toString() === subTaskId
+    );
+    if (!subTask) {
       return res.status(404).json({
         message: "subtask not found",
       });
@@ -429,10 +431,27 @@ const updateSubTask =  async (req,res) => {
     console.log(error);
     return res.status(500).json({
       message: "Internal server error",
-    })
+    });
   }
-} 
+};
 
+const getActivityByResourceId = async (req, res) => {
+  try {
+    const { resourceId } = req.params;
+
+    const activity = await ActivityLog.find({ resourceId})
+      .populate("user", "name profilePicture")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json(activity);
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+//9:21:44
 export {
   createTask,
   getTaskById,
@@ -444,4 +463,5 @@ export {
   updateTaskPriority,
   addSubTask,
   updateSubTask,
+  getActivityByResourceId,
 };

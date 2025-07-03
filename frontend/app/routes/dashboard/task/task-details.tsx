@@ -172,7 +172,7 @@ const TaskDetails = () => {
           <div className="w-full">
             <Watchers watchers={task.watchers || []}/>
 
-            <TaskActivity resouceId={task._id}/>
+            <TaskActivity resourceId={task._id}/>
           </div>
       </div>
     </div>

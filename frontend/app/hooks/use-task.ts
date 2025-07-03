@@ -35,6 +35,9 @@ export const useUpdateTaskTitleMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["task", data._id],
       });
+       queryClient.invalidateQueries({
+        queryKey: ["task-activity", data._id],
+      });
     },
   });
 };
@@ -90,6 +93,7 @@ export const useUpdateTaskAssigneesMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["task-activity", data._id],
       });
+      
     },
   });
 };
@@ -104,6 +108,9 @@ export const useUpdateTaskPriorityMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["task", data._id],
       });
+       queryClient.invalidateQueries({
+        queryKey: ["task-activity", data._id],
+      });
     },
   });
 };
@@ -117,6 +124,9 @@ export const useAddSubTaskMutation = () => {
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({
         queryKey: ["task", data._id],
+      });
+       queryClient.invalidateQueries({
+        queryKey: ["task-activity", data._id],
       });
     },
   });
@@ -137,6 +147,9 @@ export const useAddUpdatedTaskMutation = () => {
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({
         queryKey: ["task", data._id],
+      });
+       queryClient.invalidateQueries({
+        queryKey: ["task-activity", data._id],
       });
     },
   });

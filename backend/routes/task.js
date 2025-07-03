@@ -1,7 +1,19 @@
 import express from "express";
 import { validateRequest } from "zod-express-middleware";
-import { taskSchema } from "../libs/validate-schema.js"; 
-import { createTask, getMyTasks, getTaskById, updateTaskAssignees, updateTaskDescription, updateTaskStatus, updateTaskTitle, updateTaskPriority, addSubTask, updateSubTask,} from "../controllers/task.js";
+import { taskSchema } from "../libs/validate-schema.js";
+import {
+  createTask,
+  getMyTasks,
+  getTaskById,
+  updateTaskAssignees,
+  updateTaskDescription,
+  updateTaskStatus,
+  updateTaskTitle,
+  updateTaskPriority,
+  addSubTask,
+  updateSubTask,
+  getActivityByResourceId,
+} from "../controllers/task.js";
 import AuthMiddleWare from "./../middleware/authMiddleware.js";
 import { z } from "zod";
 
@@ -26,7 +38,7 @@ router.put(
   AuthMiddleWare,
   validateRequest({
     params: z.object({ taskId: z.string() }),
-    body: z.object({title: z.string()}),
+    body: z.object({ title: z.string() }),
   }),
   updateTaskTitle
 );
@@ -45,8 +57,8 @@ router.put(
   "/:taskId/status",
   AuthMiddleWare,
   validateRequest({
-    params: z.object({taskId: z.string()}),
-    body: z.object({status: z.string()}),
+    params: z.object({ taskId: z.string() }),
+    body: z.object({ status: z.string() }),
   }),
   updateTaskStatus
 );
@@ -65,8 +77,8 @@ router.put(
   "/:taskId/priority",
   AuthMiddleWare,
   validateRequest({
-    params: z.object({taskId: z.string() }),
-    body: z.object({priority: z.string() }),
+    params: z.object({ taskId: z.string() }),
+    body: z.object({ priority: z.string() }),
   }),
   updateTaskPriority
 );
@@ -86,11 +98,11 @@ router.post(
   "/:taskId/add-subtask",
   AuthMiddleWare,
   validateRequest({
-    params: z.object({taskId: z.string() }),
-    body: z.object({title: z.string() }),
+    params: z.object({ taskId: z.string() }),
+    body: z.object({ title: z.string() }),
   }),
   addSubTask
-)
+);
 
 router.put(
   "/:taskId/update-subtask/:subTaskId",
@@ -100,6 +112,15 @@ router.put(
     body: z.object({ completed: z.boolean() }),
   }),
   updateSubTask
+);
+
+router.get(
+  "/:resourceId/activity",
+  AuthMiddleWare,
+  validateRequest({
+    params: z.object({ resourceId: z.string() }),
+  }),
+  getActivityByResourceId
 );
 
 export default router;
