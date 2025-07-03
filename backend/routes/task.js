@@ -1,7 +1,7 @@
 import express from "express";
 import { validateRequest } from "zod-express-middleware";
 import { taskSchema } from "../libs/validate-schema.js"; 
-import { createTask, getMyTasks, getTaskById, updateTaskAssignees, updateTaskDescription, updateTaskStatus, updateTaskTitle, } from "../controllers/task.js";
+import { createTask, getMyTasks, getTaskById, updateTaskAssignees, updateTaskDescription, updateTaskStatus, updateTaskTitle, updateTaskPriority, addSubTask, updateSubTask,} from "../controllers/task.js";
 import AuthMiddleWare from "./../middleware/authMiddleware.js";
 import { z } from "zod";
 
@@ -61,6 +61,16 @@ router.put(
   updateTaskAssignees
 );
 
+router.put(
+  "/:taskId/priority",
+  AuthMiddleWare,
+  validateRequest({
+    params: z.object({taskId: z.string() }),
+    body: z.object({priority: z.string() }),
+  }),
+  updateTaskPriority
+);
+
 router.get(
   "/:taskId",
   AuthMiddleWare,
@@ -70,6 +80,26 @@ router.get(
     }),
   }),
   getTaskById
+);
+
+router.post(
+  "/:taskId/add-subtask",
+  AuthMiddleWare,
+  validateRequest({
+    params: z.object({taskId: z.string() }),
+    body: z.object({title: z.string() }),
+  }),
+  addSubTask
+)
+
+router.put(
+  "/:taskId/update-subtask/:subTaskId",
+  AuthMiddleWare,
+  validateRequest({
+    params: z.object({ taskId: z.string(), subTaskId: z.string() }),
+    body: z.object({ completed: z.boolean() }),
+  }),
+  updateSubTask
 );
 
 export default router;

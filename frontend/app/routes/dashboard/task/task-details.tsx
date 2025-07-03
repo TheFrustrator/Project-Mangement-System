@@ -13,6 +13,10 @@ import { formatDistanceToNow } from "date-fns";
 import { TaskStatusSelector } from "@/components/task/task-status-selector";
 import { TaskDescription } from "@/components/task/task-description";
 import { TaskAssineesSelector } from "@/components/task/task-assignees-selector";
+import { TaskPrioritySelector } from "@/components/task/task-priority-selector";
+import { SubTaskDetails } from "@/components/task/sub-task";
+import { Watchers } from "@/components/task/watchers";
+import { TaskActivity } from "@/components/task/task-activity";
 
 const TaskDetails = () => {
   const { user } = useAuth();
@@ -101,7 +105,8 @@ const TaskDetails = () => {
           </Button>
         </div>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+      <div className="flex flex-col lg:flex-row gap-6">
         <div className="lg:col-span-2">
           <div className="bg-card rounded-lg p-6 shadow-sm mb-6">
             <div className="flex flex-col md:flex-row justify-between items-start mb-4">
@@ -154,8 +159,21 @@ const TaskDetails = () => {
               assignees={task.assignees}
               projectMembers={project.members as any}
             />
+
+            <TaskPrioritySelector priority={task.priority} taskId={task._id} />
+
+            <SubTaskDetails 
+              subTasks ={task.subtasks || []}
+              taskId={task._id} />
           </div>
         </div>
+
+        {/* right side  */}
+          <div className="w-full">
+            <Watchers watchers={task.watchers || []}/>
+
+            <TaskActivity resouceId={task._id}/>
+          </div>
       </div>
     </div>
   );
