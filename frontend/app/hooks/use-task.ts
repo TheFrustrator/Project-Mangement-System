@@ -3,7 +3,6 @@ import { fetchData, postData, updateData } from "@/lib/fetch-utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { TaskPriority, TaskStatus } from "@/types";
 
-
 export const useCreateTaskMutation = () => {
   const queryClient = useQueryClient();
 
@@ -167,6 +166,66 @@ export const useUpdateSubTaskMutation = () => {
       updateData(`/tasks/${data.taskId}/update-subtask/${data.subTaskId}`, {
         completed: data.completed,
       }),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ["task", data._id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["task-activity", data._id],
+      });
+    },
+  });
+};
+
+
+export const useAddCommentMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { taskId: string; text: string}) => 
+      postData(`/tasks/${data.taskId}/add-comment`, {text: data.text}),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ["comments", data.task],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["task-activity", data.task],
+      });
+    },
+  });
+};
+
+export const useGetCommentsTaskIdQuery = (taskId: string) => {
+  
+  return useQuery({
+    queryKey: ["comments", taskId],
+    queryFn: () => fetchData(`/tasks/${taskId}/comments`)
+  });
+};
+
+export const useWatchTaskMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: { taskId: string}) => 
+      postData(`/tasks/${data.taskId}/watch`, {}),
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({
+        queryKey: ["task", data._id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["task-activity", data._id],
+      });
+    },
+  });
+};
+
+export const useAchievedTaskMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (data: {taskId: string}) => 
+      postData(`/tasks/${data.taskId}/achieved`, {}),
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({
         queryKey: ["task", data._id],

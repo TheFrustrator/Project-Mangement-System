@@ -5,7 +5,7 @@ export const Loader = () => {
         <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
         <div>
           <h1 className="text-2xl font-semibold">TaskManager</h1>
-          <p className="text-sm text-gray-300">Loading your dashboard...</p>
+          <p className="text-sm text-gray-300">Loading...</p>
         </div>
       </div>
     </div>

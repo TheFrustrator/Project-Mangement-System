@@ -4,6 +4,7 @@ import { Loader } from "../loader";
 import type { ActivityLog } from "@/types";
 import { getActivityIcon } from "./task-icon";
 import { fetchData } from '@/lib/fetch-utils';
+import { ScrollArea } from "../ui/scroll-area";
 
 export const TaskActivity = ({ resourceId }: { resourceId: string }) => {
   const { data, isPending } = useQuery({
@@ -18,9 +19,11 @@ export const TaskActivity = ({ resourceId }: { resourceId: string }) => {
 
   return (
     <div className="bg-card rounded-lg p-6 shadow-sm">
+      
       <h3 className="text-lg text-muted-foreground mb-4">Activity</h3>
 
       <div className="space-y-4">
+        <ScrollArea className="h-[960px] mb-4">
         {data?.map((activity) => (
           <div key={activity._id} className="flex gap-2">
             <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">
@@ -35,6 +38,7 @@ export const TaskActivity = ({ resourceId }: { resourceId: string }) => {
             </div>
           </div>
         ))}
+        </ScrollArea>
       </div>
     </div>
   );

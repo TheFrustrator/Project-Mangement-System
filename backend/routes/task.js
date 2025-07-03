@@ -13,6 +13,10 @@ import {
   addSubTask,
   updateSubTask,
   getActivityByResourceId,
+  getCommentByTaskId,
+  addComment,
+  achievedTask,
+  watchTask,
 } from "../controllers/task.js";
 import AuthMiddleWare from "./../middleware/authMiddleware.js";
 import { z } from "zod";
@@ -122,5 +126,43 @@ router.get(
   }),
   getActivityByResourceId
 );
+
+router.get(
+  "/:taskId/comments",
+  AuthMiddleWare,
+  validateRequest({
+    params: z.object({ taskId: z.string() })
+  }),
+  getCommentByTaskId
+);
+
+router.post(
+  "/:taskId/add-comment",
+  AuthMiddleWare,
+  validateRequest({
+    params: z.object({ taskId: z.string() }),
+    body: z.object({ text: z.string() }),
+  }),
+  addComment
+);
+
+router.post(
+  "/:taskId/watch",
+  AuthMiddleWare,
+  validateRequest({
+    params: z.object({ taskId: z.string() }),
+  }),
+  watchTask
+);
+
+router.post(
+  "/:taskId/achieved",
+  AuthMiddleWare,
+  validateRequest({
+    params: z.object({ taskId: z.string() }),
+  }),
+  achievedTask
+)
+
 
 export default router;

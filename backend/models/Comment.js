@@ -62,6 +62,6 @@ const commentSchema = new Schema(
     },{timestamps: true}
 );
 
-const Comment = mongoose.modal("Comment", commentSchema);
+const Comment = mongoose.model("Comment", commentSchema);
 
 export default Comment;

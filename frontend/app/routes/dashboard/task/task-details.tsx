@@ -1,6 +1,6 @@
 import { BackButton } from "@/components/back-button";
 import { Button } from "@/components/ui/button";
-import { useTaskByIdQuery } from "@/hooks/use-task";
+import { useAchievedTaskMutation, useTaskByIdQuery, useWatchTaskMutation } from "@/hooks/use-task";
 import { useAuth } from "@/provider/auth-context";
 import type { Project, Task } from "@/types";
 import React from "react";
@@ -17,6 +17,9 @@ import { TaskPrioritySelector } from "@/components/task/task-priority-selector";
 import { SubTaskDetails } from "@/components/task/sub-task";
 import { Watchers } from "@/components/task/watchers";
 import { TaskActivity } from "@/components/task/task-activity";
+import { CommenSection } from "@/components/task/comment-section";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { toast } from "sonner";
 
 const TaskDetails = () => {
   const { user } = useAuth();
@@ -35,6 +38,9 @@ const TaskDetails = () => {
     };
     isLoading: boolean;
   };
+
+  const { mutate: watchTask, isPending: isWatching } = useWatchTaskMutation();
+  const { mutate: achievedTask, isPending: isAchieved } = useAchievedTaskMutation();
 
   if (isLoading) {
     return (
@@ -62,6 +68,31 @@ const TaskDetails = () => {
 
   const members = task?.assignees || [];
 
+  const handleWatchTask = () => {
+    watchTask({ taskId: task._id}, {
+      onSuccess: () => {
+        toast.success("Task Watched");
+      },
+      onError: () => {
+        toast.error("Failed to watch task");
+      }
+    });
+  };
+
+  const handleAchievedTask = () => {
+    achievedTask(
+      {taskId: task._id},
+      {
+        onSuccess: () => {
+          toast.success("Task achieved");
+        },
+        onError: () => {
+          toast.error("Failed to achieve task");
+        },
+      }
+    );
+  };
+
   return (
     <div className="container mx-auto p-0 py-4 mx:px-4">
       <div className="flex flex-col md:flex-row items-center justify-between mb-6">
@@ -80,7 +111,8 @@ const TaskDetails = () => {
             className="w-fit"
             variant={"outline"}
             size={"sm"}
-            onClick={() => {}}
+            onClick={handleWatchTask}
+            disabled={isWatching}
           >
             {isUserWatching ? (
               <>
@@ -99,7 +131,8 @@ const TaskDetails = () => {
             className="w-fit"
             variant={"outline"}
             size={"sm"}
-            onClick={() => {}}
+            onClick={handleAchievedTask}
+            disabled = {isAchieved}
           >
             {task.isArchived ? "Unarchive" : "Archive"}
           </Button>
@@ -166,13 +199,17 @@ const TaskDetails = () => {
               subTasks ={task.subtasks || []}
               taskId={task._id} />
           </div>
+
+          <CommenSection taskId={task._id} members= {project.members as any}/>
         </div>
 
         {/* right side  */}
           <div className="w-full">
             <Watchers watchers={task.watchers || []}/>
+                  
 
             <TaskActivity resourceId={task._id}/>
+                  
           </div>
       </div>
     </div>
