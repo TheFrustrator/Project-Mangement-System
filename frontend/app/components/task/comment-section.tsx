@@ -52,7 +52,7 @@ export const CommenSection = ({
     <div className="bg-card rounded-lg shadow-sm p-6">
       <h3 className="text-lg font-medium mb-4">Comments</h3>
       <div className="space-y-4">
-        <ScrollArea className="h-[300px] mb-4">
+        <ScrollArea className="h-[300px] mb-4 sm:h-[200px]">
           {comments?.length > 0 ? (
             comments.map((comment) => (
               <div key={comment._id} className="flex gap-4 py-2">

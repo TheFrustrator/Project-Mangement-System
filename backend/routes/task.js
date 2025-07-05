@@ -35,7 +35,7 @@ router.post(
   createTask
 );
 
-// router.get("/my-tasks", AuthMiddleWare, getMyTasks);
+router.get("/my-tasks", AuthMiddleWare, getMyTasks);
 
 router.put(
   "/:taskId/title",
@@ -89,7 +89,7 @@ router.put(
 
 router.get(
   "/:taskId",
-  AuthMiddleWare,
+   AuthMiddleWare,
   validateRequest({
     params: z.object({
       taskId: z.string(),

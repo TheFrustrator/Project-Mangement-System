@@ -6,7 +6,7 @@ export const publicRoutes = [
     "/verify-email", 
     "/reset-password",
     "/forget-password",
-    "/"
+    "*"
     ];
 
     export const getTaskStatusColor = (status: ProjectStatus) => {
