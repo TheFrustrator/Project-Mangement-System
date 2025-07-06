@@ -1,6 +1,11 @@
 import { BackButton } from "@/components/back-button";
 import { Button } from "@/components/ui/button";
-import { useAchievedTaskMutation, useTaskByIdQuery, useWatchTaskMutation } from "@/hooks/use-task";
+import {
+  useAchievedTaskMutation,
+  useDeleteTaskMutation,
+  useTaskByIdQuery,
+  useWatchTaskMutation,
+} from "@/hooks/use-task";
 import { useAuth } from "@/provider/auth-context";
 import type { Project, Task } from "@/types";
 import React from "react";
@@ -40,7 +45,9 @@ const TaskDetails = () => {
   };
 
   const { mutate: watchTask, isPending: isWatching } = useWatchTaskMutation();
-  const { mutate: achievedTask, isPending: isAchieved } = useAchievedTaskMutation();
+  const { mutate: achievedTask, isPending: isAchieved } =
+    useAchievedTaskMutation();
+  const { mutate: deleteTask, isPending: isDeleting } = useDeleteTaskMutation();
 
   if (isLoading) {
     return (
@@ -69,19 +76,22 @@ const TaskDetails = () => {
   const members = task?.assignees || [];
 
   const handleWatchTask = () => {
-    watchTask({ taskId: task._id}, {
-      onSuccess: () => {
-        toast.success("Task Watched");
-      },
-      onError: () => {
-        toast.error("Failed to watch task");
+    watchTask(
+      { taskId: task._id },
+      {
+        onSuccess: () => {
+          toast.success("Task Watched");
+        },
+        onError: () => {
+          toast.error("Failed to watch task");
+        },
       }
-    });
+    );
   };
 
   const handleAchievedTask = () => {
     achievedTask(
-      {taskId: task._id},
+      { taskId: task._id },
       {
         onSuccess: () => {
           toast.success("Task achieved");
@@ -92,6 +102,24 @@ const TaskDetails = () => {
       }
     );
   };
+
+  const handleDeleteTask = () => {
+  if (!confirm("Are you sure you want to delete this task?")) return;
+
+  deleteTask(
+    { taskId: task._id },
+    {
+      onSuccess: () => {
+        toast.success("Task deleted");
+        navigate(`/workspaces/${workspaceId}/projects/${projectId}`);
+      },
+      onError: () => {
+        toast.error("Failed to delete task");
+      },
+    }
+  );
+};
+
 
   return (
     <div className="container mx-auto p-0 py-4 mx:px-4">
@@ -132,7 +160,7 @@ const TaskDetails = () => {
             variant={"outline"}
             size={"sm"}
             onClick={handleAchievedTask}
-            disabled = {isAchieved}
+            disabled={isAchieved}
           >
             {task.isArchived ? "Unarchive" : "Archive"}
           </Button>
@@ -170,10 +198,11 @@ const TaskDetails = () => {
                 <Button
                   variant={"destructive"}
                   size="sm"
-                  onClick={() => {}}
-                  className="hidden md:block"
+                  onClick={handleDeleteTask}
+                  disabled={isDeleting}
+                  className="md:block"
                 >
-                  Delete Task
+                  {isDeleting ? "Deleting..." : "Delete Task"}
                 </Button>
               </div>
             </div>
@@ -195,22 +224,18 @@ const TaskDetails = () => {
 
             <TaskPrioritySelector priority={task.priority} taskId={task._id} />
 
-            <SubTaskDetails 
-              subTasks ={task.subtasks || []}
-              taskId={task._id} />
+            <SubTaskDetails subTasks={task.subtasks || []} taskId={task._id} />
           </div>
 
-          <CommenSection taskId={task._id} members= {project.members as any}/>
+          <CommenSection taskId={task._id} members={project.members as any} />
         </div>
 
         {/* right side  */}
-          <div className="w-full">
-            <Watchers watchers={task.watchers || []}/>
-                  
+        <div className="w-full">
+          <Watchers watchers={task.watchers || []} />
 
-            <TaskActivity resourceId={task._id}/>
-                  
-          </div>
+          <TaskActivity resourceId={task._id} />
+        </div>
       </div>
     </div>
   );

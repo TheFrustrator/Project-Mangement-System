@@ -23,7 +23,7 @@ export const TaskActivity = ({ resourceId }: { resourceId: string }) => {
       <h3 className="text-lg text-muted-foreground mb-4">Activity</h3>
 
       <div className="space-y-4">
-        <ScrollArea className="h-[960px] mb-4">
+        <ScrollArea className="h-[760px] mb-4">
         {data?.map((activity) => (
           <div key={activity._id} className="flex gap-2">
             <div className="size-8 rounded-full bg-primary/10 flex items-center justify-center text-primary">

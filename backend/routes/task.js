@@ -17,6 +17,7 @@ import {
   addComment,
   achievedTask,
   watchTask,
+  deleteTask,
 } from "../controllers/task.js";
 import AuthMiddleWare from "./../middleware/authMiddleware.js";
 import { z } from "zod";
@@ -162,7 +163,19 @@ router.post(
     params: z.object({ taskId: z.string() }),
   }),
   achievedTask
-)
+);
+
+router.delete(
+  "/:taskId",
+  AuthMiddleWare,
+  validateRequest({
+    params: z.object({
+      taskId: z.string(),
+    }),
+  }),
+  deleteTask
+);
+
 
 
 export default router;

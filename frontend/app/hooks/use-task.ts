@@ -1,7 +1,8 @@
 import type { CreateTaskFormData } from "@/components/task/create-task-dialog";
-import { fetchData, postData, updateData } from "@/lib/fetch-utils";
+import { deleteData, fetchData, postData, updateData } from "@/lib/fetch-utils";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { TaskPriority, TaskStatus } from "@/types";
+import axios from "axios";
 
 export const useCreateTaskMutation = () => {
   const queryClient = useQueryClient();
@@ -34,7 +35,7 @@ export const useUpdateTaskTitleMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["task", data._id],
       });
-       queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ["task-activity", data._id],
       });
     },
@@ -92,7 +93,6 @@ export const useUpdateTaskAssigneesMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["task-activity", data._id],
       });
-      
     },
   });
 };
@@ -107,7 +107,7 @@ export const useUpdateTaskPriorityMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["task", data._id],
       });
-       queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ["task-activity", data._id],
       });
     },
@@ -124,7 +124,7 @@ export const useAddSubTaskMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["task", data._id],
       });
-       queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ["task-activity", data._id],
       });
     },
@@ -147,7 +147,7 @@ export const useAddUpdatedTaskMutation = () => {
       queryClient.invalidateQueries({
         queryKey: ["task", data._id],
       });
-       queryClient.invalidateQueries({
+      queryClient.invalidateQueries({
         queryKey: ["task-activity", data._id],
       });
     },
@@ -177,13 +177,12 @@ export const useUpdateSubTaskMutation = () => {
   });
 };
 
-
 export const useAddCommentMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { taskId: string; text: string}) => 
-      postData(`/tasks/${data.taskId}/add-comment`, {text: data.text}),
+    mutationFn: (data: { taskId: string; text: string }) =>
+      postData(`/tasks/${data.taskId}/add-comment`, { text: data.text }),
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({
         queryKey: ["comments", data.task],
@@ -196,10 +195,9 @@ export const useAddCommentMutation = () => {
 };
 
 export const useGetCommentsTaskIdQuery = (taskId: string) => {
-  
   return useQuery({
     queryKey: ["comments", taskId],
-    queryFn: () => fetchData(`/tasks/${taskId}/comments`)
+    queryFn: () => fetchData(`/tasks/${taskId}/comments`),
   });
 };
 
@@ -207,7 +205,7 @@ export const useWatchTaskMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: { taskId: string}) => 
+    mutationFn: (data: { taskId: string }) =>
       postData(`/tasks/${data.taskId}/watch`, {}),
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({
@@ -224,7 +222,7 @@ export const useAchievedTaskMutation = () => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: {taskId: string}) => 
+    mutationFn: (data: { taskId: string }) =>
       postData(`/tasks/${data.taskId}/achieved`, {}),
     onSuccess: (data: any) => {
       queryClient.invalidateQueries({
@@ -236,3 +234,18 @@ export const useAchievedTaskMutation = () => {
     },
   });
 };
+
+export const useDeleteTaskMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ taskId }: { taskId: string }) => {
+      return await deleteData(`/tasks/${taskId}`);
+    },
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["project", data.project] });
+      queryClient.invalidateQueries({ queryKey: ["tasks"] });
+    },
+  });
+};
+
