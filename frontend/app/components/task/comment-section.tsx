@@ -49,7 +49,7 @@ export const CommenSection = ({
   if (isLoading) return <div> <Loader /> </div>
 
   return (
-    <div className="bg-card rounded-lg shadow-sm p-6">
+    <div className="bg-card rounded-lg shadow-sm p-6 dark:bg-black dark:text-white">
       <h3 className="text-lg font-medium mb-4">Comments</h3>
       <div className="space-y-4">
         <ScrollArea className="h-[300px] mb-4 sm:h-[200px]">

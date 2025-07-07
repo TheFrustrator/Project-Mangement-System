@@ -19,6 +19,8 @@ router.post(
   createWorkspace
 );
 
+
+
 router.get("/", AuthMiddleWare, getWorkspaces);
 router.get("/:workspaceId", AuthMiddleWare, getWorkspaceDetails);
 router.get("/:workspaceId/projects", AuthMiddleWare, getWorkspaceProject);

@@ -249,3 +249,12 @@ export const useDeleteTaskMutation = () => {
   });
 };
 
+
+export const useGetMyTaskQuery = () => {
+  const queryClient = useQueryClient();
+
+  return useQuery({
+    queryKey: ["my-tasks", "user"],
+    queryFn: () => fetchData("/tasks/my-tasks"),
+  })
+}
