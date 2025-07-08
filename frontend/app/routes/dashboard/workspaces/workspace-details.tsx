@@ -7,6 +7,8 @@ import type { Project, Workspace } from "@/types";
 import { useState } from "react";
 import { useParams } from "react-router";
 import { CreateProjectDialog } from "@/components/project/create-project";
+import { InviteMemberDialog } from "@/components/workspace/invite-member";
+
 
 const WorkspaceDetails = () => {
   const { workspaceId } = useParams<{ workspaceId: string }>();
@@ -53,6 +55,12 @@ const WorkspaceDetails = () => {
         onOpenChange={setIsCreateProject}
         workspaceId={workspaceId}
         workspaceMembers={data.workspace.members as any}
+      />
+
+      <InviteMemberDialog
+        isOpen={isInviteMember}
+        onOpenChange={setIsInviteMember}
+        workspaceId={workspaceId}
       />
     </div>
   );

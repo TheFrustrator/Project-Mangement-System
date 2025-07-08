@@ -11,7 +11,7 @@ const createTask = async (req, res) => {
     const { title, description, status, priority, dueDate, assignees } =
       req.body;
 
-    const project = await Project.findById(projectId);
+    const project = await Project.findById(projectId).populate("members.user");
 
     if (!project) {
       return res.status(404).json({

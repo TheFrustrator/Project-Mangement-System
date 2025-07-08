@@ -200,141 +200,166 @@ const TaskColumn = ({
   isFullWidth = false,
 }: TaskColumnProps) => {
   return (
-  <div
-    className={cn(
-      "grid gap-4",
-      isFullWidth ? "grid-cols-1 sm:grid-cols-2 lg:grid-cols-3" : ""
-    )}
-  >
     <div
-      className={cn(
-        "space-y-4",
-        !isFullWidth ? "h-full" : "col-span-full mb-4"
-      )}
+      className={
+        isFullWidth
+          ? "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+          : ""
+      }
     >
-      {!isFullWidth && (
-        <div className="flex items-center justify-between px-2">
-          <h1 className="font-medium text-base sm:text-lg">{title}</h1>
-          <Badge variant="outline">{tasks.length}</Badge>
-        </div>
-      )}
-
       <div
         className={cn(
-          isFullWidth
-            ? "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
-            : "space-y-3 px-2"
+          "space-y-4",
+          !isFullWidth ? "h-full" : "col-span-full mb-4"
         )}
       >
-        {tasks.length === 0 ? (
-          <div className="text-center text-sm text-muted-foreground py-4">
-            No tasks yet
+        {!isFullWidth && (
+          <div className="flex items-center justify-between">
+            <h1 className="font-medium">{title}</h1>
+            <Badge variant="outline">{tasks.length}</Badge>
           </div>
-        ) : (
-          tasks.map((task) => (
-            <TaskCard
-              key={task._id}
-              task={task}
-              onClick={() => onTaskClick(task._id)}
-            />
-          ))
         )}
+
+        <div
+          className={cn(
+            "space-y-3",
+            isFullWidth && "grid grid-cols-2 lg:grid-cols-3 gap-4"
+          )}
+        >
+          {tasks.length === 0 ? (
+            <div className="text-center text-sm text-muted-foreground">
+              No tasks yet
+            </div>
+          ) : (
+            tasks.map((task) => (
+              <TaskCard
+                key={task._id}
+                task={task}
+                onClick={() => onTaskClick(task._id)}
+              />
+            ))
+          )}
+        </div>
       </div>
     </div>
-  </div>
-);
-
+  );
 };
 
 const TaskCard = ({ task, onClick }: { task: Task; onClick: () => void }) => {
   return (
     <Card
-  onClick={onClick}
-  className="cursor-pointer hover:shadow-md transition-all duration-300 hover:translate-y-1 w-full"
->
-  <CardHeader className="pb-2">
-    <div className="flex items-center justify-between gap-2">
-      <Badge
-        className={cn(
-          "text-xs px-2 py-0.5",
-          task.priority === "High"
-            ? "bg-red-500 text-white"
-            : task.priority === "Medium"
-            ? "bg-orange-500 text-white"
-            : "bg-slate-500 text-white"
-        )}
-      >
-        {task.priority}
-      </Badge>
+      onClick={onClick}
+      className="cursor-pointer hover:shadow-md transition-all duration-300 hover:translate-y-1"
+    >
+      <CardHeader>
+        <div className="flex items-center justify-between">
+          <Badge
+            className={
+              task.priority === "High"
+                ? "bg-red-500 text-white"
+                : task.priority === "Medium"
+                ? "bg-orange-500 text-white"
+                : "bg-slate-500 text-white"
+            }
+          >
+            {task.priority}
+          </Badge>
 
-      <div className="flex gap-1 shrink-0">
-        {task.status !== "To Do" && (
-          <Button variant="ghost" size="icon" className="size-6">
-            <AlertCircle className="size-4" />
-          </Button>
-        )}
-        {task.status !== "In Progress" && (
-          <Button variant="ghost" size="icon" className="size-6">
-            <Clock className="size-4 sm:hidden" />
-          </Button>
-        )}
-        {task.status !== "Done" && (
-          <Button variant="ghost" size="icon" className="size-6">
-            <CheckCircle className="size-4 sm:hidden" />
-          </Button>
-        )}
-      </div>
-    </div>
-  </CardHeader>
+          <div className="flex gap-1">
+            {task.status !== "To Do" && (
+              <Button
+                variant={"ghost"}
+                size={"icon"}
+                className="size-6"
+                onClick={() => {
+                  console.log("mark as to do");
+                }}
+                title="Mark as To Do"
+              >
+                <AlertCircle className={cn("size-4")} />
+                <span className="sr-only">Mark as To Do</span>
+              </Button>
+            )}
+            {task.status !== "In Progress" && (
+              <Button
+                variant={"ghost"}
+                size={"icon"}
+                className="size-6"
+                onClick={() => {
+                  console.log("mark as in progress");
+                }}
+                title="Mark as In Progress"
+              >
+                <Clock className={cn("size-4")} />
+                <span className="sr-only">Mark as In Progress</span>
+              </Button>
+            )}
+            {task.status !== "Done" && (
+              <Button
+                variant={"ghost"}
+                size={"icon"}
+                className="size-6"
+                onClick={() => {
+                  console.log("mark as done");
+                }}
+                title="Mark as Done"
+              >
+                <CheckCircle className={cn("size-4")} />
+                <span className="sr-only">Mark as Done</span>
+              </Button>
+            )}
+          </div>
+        </div>
+      </CardHeader>
 
-  <CardContent className="space-y-2">
-    <h4 className="font-medium text-sm break-words">{task.title}</h4>
+      <CardContent>
+        <h4 className="ont-medium mb-2">{task.title}</h4>
 
-    {task.description && (
-      <p className="text-xs text-muted-foreground line-clamp-2">
-        {task.description}
-      </p>
-    )}
+        {task.description && (
+          <p className="text-sm text-muted-foreground line-clamp-2 mb-2">
+            {task.description}
+          </p>
+        )}
 
-    <div className="flex items-center justify-between text-xs flex-wrap gap-2">
-      {task.assignees && task.assignees.length > 0 ? (
-        <div className="flex -space-x-2">
-          {task.assignees.slice(0, 5).map((member) => (
-            <Avatar
-              key={member._id}
-              className="size-6 bg-gray-700 rounded-full border border-white"
-              title={member.name}
-            >
-              <AvatarImage src={member.profilePicture} />
-              <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-          ))}
-          {task.assignees.length > 5 && (
-            <span className="text-[10px] text-muted-foreground pl-1">
-              +{task.assignees.length - 5}
-            </span>
+        <div className="flex items-center justify-between text-sm">
+          <div className="flex items-center gap-2">
+            {task.assignees && task.assignees.length > 0 && (
+              <div className="flex -space-x-2">
+                {task.assignees.slice(0, 5).map((member) => (
+                  <Avatar
+                    key={member._id}
+                    className="relative size-8 bg-gray-700 rounded-full border-2 border-background overflow-hidden"
+                    title={member.name}
+                  >
+                    <AvatarImage src={member.profilePicture} />
+                    <AvatarFallback>{member.name.charAt(0)}</AvatarFallback>
+                  </Avatar>
+                ))}
+
+                {task.assignees.length > 5 && (
+                  <span className="text-xs text-muted-foreground">
+                    + {task.assignees.length - 5}
+                  </span>
+                )}
+              </div>
+            )}
+          </div>
+
+          {task.dueDate && (
+            <div className="text-xs text-muted-foreground flex items-center">
+              <Calendar className="size-3 mr-1" />
+              {format(new Date(task.dueDate), "MMM d, yyyy")}
+            </div>
           )}
         </div>
-      ) : (
-        <span className="text-[11px] text-muted-foreground">Unassigned</span>
-      )}
-
-      {task.dueDate && (
-        <div className="text-[11px] text-muted-foreground flex items-center whitespace-nowrap">
-          <Calendar className="size-3 mr-1" />
-          {format(new Date(task.dueDate), "MMM d, yyyy")}
-        </div>
-      )}
-    </div>
-
-    {task.subtasks && task.subtasks.length > 0 && (
-      <div className="text-[11px] text-muted-foreground">
-        {task.subtasks.filter((s) => s.completed).length} /{" "}
-        {task.subtasks.length} subtasks
-      </div>
-    )}
-  </CardContent>
-</Card>
-
+        {/* 5/10 subtasks */}
+        {task.subtasks && task.subtasks.length > 0 && (
+          <div className="mt-2 text-xs text-muted-foreground">
+            {task.subtasks.filter((subtask) => subtask.completed).length} /{" "}
+            {task.subtasks.length} subtasks
+          </div>
+        )}
+      </CardContent>
+    </Card>
   );
 };

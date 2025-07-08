@@ -7,7 +7,7 @@ import { fetchData } from "@/lib/fetch-utils";
 import { useAuth } from "@/provider/auth-context";
 import type { Workspace } from "@/types";
 import { useState } from "react";
-import { Navigate, Outlet } from "react-router";
+import { Navigate, Outlet, useParams } from "react-router";
 
 export const clientLoader = async () => {
   try {
@@ -26,8 +26,9 @@ const DashboardLayout = () => {
 
   if (isLoading) {
     return <Loader />;
-  }
+  };
 
+ 
   if (!isAuthenticated) {
     return <Navigate to="/sign-in" />;
   }
@@ -37,6 +38,7 @@ const DashboardLayout = () => {
   };
 
   return (
+    
     <div className="flex h-screen w-full ">
       <SidebarComponent currentWorkspace={currentWorkspace} />
 
