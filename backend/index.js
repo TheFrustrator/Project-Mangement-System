@@ -22,7 +22,7 @@ app.use(morgan("dev"));
 // db connection
 mongoose
   .connect(process.env.MONGODB_URI)
-  .then(() => console.log("BD Connected successfully."))
+  .then(() => console.log("DB Connected successfully."))
   .catch((err) => console.log("Failed to connect to DB:", err));
 
 app.use(express.json());
