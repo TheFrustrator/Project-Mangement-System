@@ -5,11 +5,37 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useLoaderData,
 } from "react-router";
 
 import type { Route } from "./+types/root";
 import "./app.css";
 import ReactQueryProvider from "./provider/react-query-provider";
+
+/* ============================= */
+/* ROOT LOADER */
+/* ============================= */
+
+export async function loader() {
+  try {
+    const res = await fetch("http://localhost:5000/api/workspaces", {
+      credentials: "include", // important if using cookies/JWT
+    });
+
+    if (!res.ok) {
+      throw new Response("Failed to fetch workspaces", { status: 500 });
+    }
+
+    const workspaces = await res.json();
+
+    return { workspaces };
+  } catch (error) {
+    console.error("Workspace loader error:", error);
+    return { workspaces: [] }; // prevent crash
+  }
+}
+
+/* ============================= */
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -20,7 +46,8 @@ export const links: Route.LinksFunction = () => [
   },
   {
     rel: "stylesheet",
-    href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    href:
+      "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
   },
 ];
 

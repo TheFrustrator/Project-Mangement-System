@@ -12,7 +12,12 @@ import {
   DropdownMenuGroup,
 } from "../ui/dropdown-menu";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
-import { Link, useLoaderData, useLocation, useNavigate } from "react-router";
+import {
+  Link,
+  useLoaderData,
+  useLocation,
+  useNavigate,
+} from "react-router";
 import { WorkspaceAvatar } from "../workspace/workspace-avatar";
 
 interface HeaderProps {
@@ -27,30 +32,39 @@ export const Header = ({
   onCreateWorkspace,
 }: HeaderProps) => {
   const navigate = useNavigate();
-
+  const location = useLocation();
   const { user, logout } = useAuth();
-  const { workspaces } = useLoaderData() as { workspaces: Workspace[] };
-  const isOnWorkspacePage = useLocation().pathname.includes("/workspace");
+
+  /* ============================= */
+  /* SAFE LOADER HANDLING */
+  /* ============================= */
+
+  const loaderData =
+    useLoaderData() as { workspaces?: Workspace[] } | undefined;
+
+  const workspaces: Workspace[] = loaderData?.workspaces ?? [];
+
+  /* ============================= */
+
+  const isOnWorkspacePage = location.pathname.includes("/workspace");
 
   const handleOnClick = (workspace: Workspace) => {
     onWorkspaceSelected(workspace);
-    const location = window.location;
 
     if (isOnWorkspacePage) {
       navigate(`/workspaces/${workspace._id}`);
     } else {
-      const basePath = location.pathname;
-
-      navigate(`${basePath}?workspaceId=${workspace._id}`);
+      navigate(`${location.pathname}?workspaceId=${workspace._id}`);
     }
   };
 
   return (
     <div className="bg-background sticky top-0 z-40 border-b">
       <div className="flex h-14 items-center justify-between px-4 sm:px-6 lg:px-8 py-4">
-        <DropdownMenu >
+        {/* ================= Workspace Dropdown ================= */}
+        <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant={"outline"} >
+            <Button variant="outline">
               {selectedWorkspace ? (
                 <>
                   {selectedWorkspace.color && (
@@ -59,45 +73,55 @@ export const Header = ({
                       name={selectedWorkspace.name}
                     />
                   )}
-                  <span className="font-medium ">
-                    {selectedWorkspace?.name}
+                  <span className="font-medium">
+                    {selectedWorkspace.name}
                   </span>
                 </>
               ) : (
-                <span>
-                  Select Workspace
-                </span>
+                <span>Select Workspace</span>
               )}
             </Button>
           </DropdownMenuTrigger>
 
-          <DropdownMenuContent >
+          <DropdownMenuContent>
             <DropdownMenuLabel>Workspace</DropdownMenuLabel>
             <DropdownMenuSeparator />
 
             <DropdownMenuGroup>
-              {workspaces.map((ws) => (
-                <DropdownMenuItem
-                  key={ws._id}
-                  onClick={() => handleOnClick(ws)}
-                >
-                  {ws.color && (
-                    <WorkspaceAvatar color={ws.color} name={ws.name} />
-                  )}
-                  <span className="ml-2">{ws.name}</span>
+              {workspaces.length > 0 ? (
+                workspaces.map((ws) => (
+                  <DropdownMenuItem
+                    key={ws._id}
+                    onClick={() => handleOnClick(ws)}
+                  >
+                    {ws.color && (
+                      <WorkspaceAvatar
+                        color={ws.color}
+                        name={ws.name}
+                      />
+                    )}
+                    <span className="ml-2">{ws.name}</span>
+                  </DropdownMenuItem>
+                ))
+              ) : (
+                <DropdownMenuItem disabled>
+                  No workspaces found
                 </DropdownMenuItem>
-              ))}
+              )}
             </DropdownMenuGroup>
 
-            <DropdownMenuGroup >
+            <DropdownMenuSeparator />
+
+            <DropdownMenuGroup>
               <DropdownMenuItem onClick={onCreateWorkspace}>
-                <PlusCircle className="w-4 h-4 mr-2 " />
+                <PlusCircle className="w-4 h-4 mr-2" />
                 Create Workspace
               </DropdownMenuItem>
             </DropdownMenuGroup>
           </DropdownMenuContent>
         </DropdownMenu>
 
+        {/* ================= Right Side ================= */}
         <div className="flex items-center gap-2">
           <Button variant="ghost" size="icon">
             <Bell />
@@ -105,9 +129,12 @@ export const Header = ({
 
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <button className="rounded-full border p-1 w-8 h-8 ">
+              <button className="rounded-full border p-1 w-8 h-8">
                 <Avatar className="w-8 h-8">
-                  <AvatarImage src={user?.profilePicture} alt={user?.name} />
+                  <AvatarImage
+                    src={user?.profilePicture}
+                    alt={user?.name}
+                  />
                   <AvatarFallback className="bg-primary text-primary-foreground">
                     {user?.name?.charAt(0).toUpperCase()}
                   </AvatarFallback>
@@ -117,12 +144,14 @@ export const Header = ({
 
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>My Account</DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-gray-500 text-white"/>
-              <DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem asChild>
                 <Link to="/user/profile">Profile</Link>
               </DropdownMenuItem>
-              <DropdownMenuSeparator/>
-              <DropdownMenuItem onClick={logout}>Log Out</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem onClick={logout}>
+                Log Out
+              </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
