@@ -27,7 +27,7 @@ mongoose
 
 app.use(express.json());
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
 app.get("/", async (req, res) => {
   res.status(200).json({
